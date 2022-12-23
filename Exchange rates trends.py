@@ -49,6 +49,14 @@ mono.place(x=5 , y=290)
 
 def send_request():
     
+    if selected_currency.get() == "":
+        tk.messagebox.showinfo(message="Please select currency")
+        return
+    
+    if monotonicity.get() == "":
+        tk.messagebox.showinfo(message="Please select monotonicity")
+        return
+    
     date1 = datetime.strptime(str(cal.get_date()), "%Y-%m-%d")
     date2 = datetime.strptime(str(cal2.get_date()), "%Y-%m-%d")
     
@@ -65,6 +73,8 @@ def send_request():
     
     for element in api['rates']:
         exchange_rates.append(element['effectiveDate'] + ": " + str(element['mid']))
+        
+    output = tk.Text(root, width= 22, height= 20, wrap= tk.WORD)
         
     
     def non_decreasing_longest_sequence(rates):
@@ -87,8 +97,11 @@ def send_request():
                     break
             if len(possibly_longest) > len(longest):
                 longest = possibly_longest
+                
+        output.place(x=200, y=120)
         
-        print(longest)
+        for rate in longest:
+            output.insert(tk.END, rate + "\n")
     
     
     def non_increasing_longest_sequence(rates):
@@ -112,7 +125,13 @@ def send_request():
             if len(possibly_longest) > len(longest):
                 longest = possibly_longest
         
-        print(longest)
+        output.place(x=200, y=120)
+
+        for rate in longest:
+            output.insert(tk.END, rate + "\n")
+            
+        if output.get("1.0", "end-1c") == "":
+            output.insert(tk.END, "No sequence matching specified criteria. Please select different time range.")  
         
     if mono == "non-decreasing":
         non_decreasing_longest_sequence(exchange_rates)  

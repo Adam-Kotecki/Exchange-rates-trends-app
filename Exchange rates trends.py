@@ -13,8 +13,15 @@ root = tk.Tk()
 root.geometry('400x500')
 #root.resizable(False, False)
 root.title('Exchange rates trends app')
+root.configure(bg="#e3e3cb")
 
-label2 = ttk.Label(text="Select currency:")
+image1 = Image.open("Great rate.png").resize((400, 100))
+test = ImageTk.PhotoImage(image1)
+
+label1 = ttk.Label(image=test)
+label1.place(x = 0, y = 0)
+
+label2 = ttk.Label(text="Select currency:", background="#e3e3cb")
 label2.place(x=5 , y=120)
 
 selected_currency = tk.StringVar()
@@ -23,22 +30,22 @@ currency['values'] = ('EUR', 'USD', 'CZK', 'JPY', 'AUD', 'GBP', 'UAH')
 currency['state'] = 'readonly'
 currency.place(x=5 , y=140)
 
-label3 = ttk.Label(text="Start date:")
+label3 = ttk.Label(text="Start date:", background="#e3e3cb")
 label3.place(x=5 , y=170)
 
 date1 = tk.StringVar()
 cal = DateEntry(root, width= 16, background= "green", foreground= "white",bd=2, textvariable=date1)
 cal.place(x=5 , y=190)
 
-label4 = ttk.Label(text="End date:")
+label4 = ttk.Label(text="End date:", background="#e3e3cb")
 label4.place(x=5 , y=220)
 
 date2 = tk.StringVar()
 cal2 = DateEntry(root, width= 16, background= "green", foreground= "white",bd=2,  textvariable=date2)
 cal2.place(x=5 , y=240)
 
-label4 = ttk.Label(text="Monotonicity of the sequence:")
-label4.place(x=5 , y=270)
+label5 = ttk.Label(text="Monotonicity of the sequence:", background="#e3e3cb")
+label5.place(x=5 , y=270)
 
 monotonicity = tk.StringVar()
 mono = ttk.Combobox(root, textvariable=monotonicity)
@@ -67,7 +74,12 @@ def send_request():
     
     response = requests.get(f"http://api.nbp.pl/api/exchangerates/rates/a/" + currency + "/" + start + "/" + end + "/")
     response.encoding='utf-8-sig'
-    api = json.loads(response.text)
+    
+    try:
+        api = json.loads(response.text)
+    except:
+        tk.messagebox.showinfo(message="Please select different time range.")
+        return
     
     exchange_rates = []
     
@@ -138,9 +150,13 @@ def send_request():
     else:
         non_increasing_longest_sequence(exchange_rates)
     
+def help():
+    tk.messagebox.showinfo(message="This app displays the longest exchange rates sequence of specified monotonicity, based on selected currency and date range. App uses NBP web API. Please note that in some cases not every date is covered, so the sequence may consist of non-consecutive dates.")
 
-button = tk.Button(root, text="Submit", command=lambda: send_request(), width=10, bg="blue4", fg="white", font=("ariel", 12, "bold") )
+button = tk.Button(root, text="Submit", command=lambda: send_request(), width=10, bg="#7c9c84", fg="#e3e3cb", font=("ariel", 12, "bold") )
 button.place(x=5, y=460)
 
+button2 = tk.Button(root, text="Help", command=lambda: help(), width=10, bg="#7c9c84", fg="#e3e3cb", font=("ariel", 12, "bold") )
+button2.place(x=285, y=460)
 
 root.mainloop()

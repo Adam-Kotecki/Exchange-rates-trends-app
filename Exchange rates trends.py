@@ -11,7 +11,7 @@ from datetime import datetime
 root = tk.Tk()
 
 root.geometry('400x500')
-#root.resizable(False, False)
+root.resizable(False, False)
 root.title('Exchange rates trends app')
 root.configure(bg="#e3e3cb")
 
